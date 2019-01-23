@@ -21,6 +21,7 @@ export default {
   data() {
     return {
       editor: new Editor({
+        mode: 'markdown',
         extensions: [
           new HardBreak(),
           new Heading({ levels: [1, 2, 3] }),
@@ -34,6 +35,9 @@ export default {
             This would be nice.
           </p>
         `,
+        onUpdate({ getMarkdown }) {
+          console.log(getMarkdown())
+        },
       }),
     }
   },

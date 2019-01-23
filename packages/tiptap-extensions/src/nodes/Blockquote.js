@@ -17,6 +17,9 @@ export default class Blockquote extends Node {
         { tag: 'blockquote' },
       ],
       toDOM: () => ['blockquote', 0],
+      toMarkdown: (state, node) => {
+        state.wrapBlock('> ', null, node, () => state.renderContent(node))
+      },
     }
   }
 

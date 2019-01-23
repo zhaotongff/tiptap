@@ -31,6 +31,10 @@ export default class Image extends Node {
         },
       ],
       toDOM: node => ['img', node.attrs],
+      toMarkdown: (state, node) => {
+        state.write(`![${state.esc(node.attrs.alt || '')}](${state.esc(node.attrs.src)
+                 }${node.attrs.title ? ` ${state.quote(node.attrs.title)}` : ''})`)
+      },
     }
   }
 

@@ -15,6 +15,9 @@ export default class Bullet extends Node {
         { tag: 'ul' },
       ],
       toDOM: () => ['ul', 0],
+      toMarkdown: (state, node) => {
+        state.renderList(node, '  ', () => `${node.attrs.bullet || '*'} `)
+      },
     }
   }
 

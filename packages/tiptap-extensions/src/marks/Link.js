@@ -28,7 +28,25 @@ export default class Link extends Mark {
         ...node.attrs,
         rel: 'noopener noreferrer nofollow',
       }, 0],
+      toMarkdown: {
+        open(state, mark, parent, index) {
+          return this.isPlainURL(mark, parent, index, 1) ? '<' : '['
+        },
+        close(state, mark, parent, index) {
+          return this.isPlainURL(mark, parent, index, -1) ? '>'
+            : `](${state.esc(mark.attrs.href)}${mark.attrs.title ? ` ${state.quote(mark.attrs.title)}` : ''})`
+        },
+      },
     }
+  }
+
+  isPlainURL(link, parent, index, side) {
+    if (link.attrs.title) return false
+    const content = parent.child(index + (side < 0 ? -1 : 0))
+    if (!content.isText || content.text != link.attrs.href || content.marks[content.marks.length - 1] != link) return false
+    if (index == (side < 0 ? 1 : parent.childCount - 1)) return true
+    const next = parent.child(index + (side < 0 ? -2 : 1))
+    return !link.isInSet(next.marks)
   }
 
   commands({ type }) {

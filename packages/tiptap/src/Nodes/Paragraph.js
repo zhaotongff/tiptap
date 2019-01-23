@@ -16,6 +16,10 @@ export default class Paragraph extends Node {
         tag: 'p',
       }],
       toDOM: () => ['p', 0],
+      toMarkdown: (state, node) => {
+        state.renderInline(node)
+        state.closeBlock(node)
+      },
     }
   }
 

@@ -30,6 +30,11 @@ export default class Heading extends Node {
           attrs: { level },
         })),
       toDOM: node => [`h${node.attrs.level}`, 0],
+      toMarkdown: (state, node) => {
+        state.write(`${state.repeat('#', node.attrs.level)} `)
+        state.renderInline(node)
+        state.closeBlock(node)
+      },
     }
   }
 

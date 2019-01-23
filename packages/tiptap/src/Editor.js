@@ -6,6 +6,7 @@ import { gapCursor } from 'prosemirror-gapcursor'
 import { keymap } from 'prosemirror-keymap'
 import { baseKeymap, selectParentNode } from 'prosemirror-commands'
 import { inputRules, undoInputRule } from 'prosemirror-inputrules'
+import { MarkdownSerializer } from 'prosemirror-markdown'
 import { markIsActive, nodeIsActive, getMarkAttrs } from 'tiptap-utils'
 import { ExtensionManager, ComponentView } from './Utils'
 import { Doc, Paragraph, Text } from './Nodes'
@@ -14,6 +15,7 @@ export default class Editor {
 
   constructor(options = {}) {
     this.defaultOptions = {
+      mode: 'html',
       editable: true,
       autoFocus: false,
       extensions: [],
@@ -53,6 +55,7 @@ export default class Editor {
     this.view = this.createView()
     this.commands = this.createCommands()
     this.setActiveNodesAndMarks()
+    this.MarkdownSerializer = this.createMarkdownSerializer()
 
     if (this.options.autoFocus) {
       setTimeout(() => {
@@ -64,6 +67,26 @@ export default class Editor {
       view: this.view,
       state: this.state,
     })
+  }
+
+  createMarkdownSerializer() {
+    const nodes = Object
+      .entries(this.nodes)
+      .filter(([, node]) => node.toMarkdown)
+      .reduce((items, [name, { toMarkdown }]) => ({
+        ...items,
+        [name]: toMarkdown,
+      }), {})
+
+    const marks = Object
+      .entries(this.marks)
+      .filter(([, node]) => node.toMarkdown)
+      .reduce((items, [name, { toMarkdown }]) => ({
+        ...items,
+        [name]: toMarkdown,
+      }), {})
+
+    return new MarkdownSerializer(nodes, marks)
   }
 
   setOptions(options) {
@@ -273,6 +296,7 @@ export default class Editor {
     this.options.onUpdate({
       getHTML: this.getHTML.bind(this),
       getJSON: this.getJSON.bind(this),
+      getMarkdown: this.getMarkdown.bind(this),
       state: this.state,
       transaction,
     })
@@ -295,6 +319,10 @@ export default class Editor {
 
   getJSON() {
     return this.state.doc.toJSON()
+  }
+
+  getMarkdown() {
+    return this.MarkdownSerializer.serialize(this.view.state.doc)
   }
 
   setContent(content = {}, emitUpdate = false) {

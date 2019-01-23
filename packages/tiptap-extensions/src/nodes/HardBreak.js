@@ -16,6 +16,14 @@ export default class HardBreak extends Node {
         { tag: 'br' },
       ],
       toDOM: () => ['br'],
+      toMarkdown: (state, node, parent, index) => {
+        for (let i = index + 1; i < parent.childCount; i++) {
+          if (parent.child(i).type !== node.type) {
+            state.write('\\\n')
+            return
+          }
+        }
+      },
     }
   }
 

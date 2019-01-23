@@ -23,6 +23,12 @@ export default class Bold extends Mark {
         },
       ],
       toDOM: () => ['strong', 0],
+      toMarkdown: {
+        open: '**',
+        close: '**',
+        mixable: true,
+        expelEnclosingWhitespace: true,
+      },
     }
   }
 

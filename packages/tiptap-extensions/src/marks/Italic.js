@@ -15,6 +15,12 @@ export default class Italic extends Mark {
         { style: 'font-style=italic' },
       ],
       toDOM: () => ['em', 0],
+      toMarkdown: {
+        open: '*',
+        close: '*',
+        mixable: true,
+        expelEnclosingWhitespace: true,
+      },
     }
   }
 

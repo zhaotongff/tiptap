@@ -16,6 +16,9 @@ export default class ListItem extends Node {
         { tag: 'li' },
       ],
       toDOM: () => ['li', 0],
+      toMarkdown: (state, node) => {
+        state.renderContent(node)
+      },
     }
   }
 
