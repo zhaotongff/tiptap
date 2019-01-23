@@ -19,6 +19,12 @@ export default class Underline extends Mark {
         },
       ],
       toDOM: () => ['u', 0],
+      toMarkdown: {
+        open: '__',
+        close: '__',
+        mixable: true,
+        expelEnclosingWhitespace: true,
+      },
     }
   }
 

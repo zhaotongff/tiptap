@@ -25,6 +25,12 @@ export default class Strike extends Mark {
         },
       ],
       toDOM: () => ['s', 0],
+      toMarkdown: {
+        open: '~~',
+        close: '~~',
+        mixable: true,
+        expelEnclosingWhitespace: true,
+      },
     }
   }
 
