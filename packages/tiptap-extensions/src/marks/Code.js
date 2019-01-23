@@ -14,12 +14,8 @@ export default class Code extends Mark {
       ],
       toDOM: () => ['code', 0],
       toMarkdown: {
-        open(state, mark, parent, index) {
-          return this.backticksFor(parent.child(index), -1)
-        },
-        close(state, mark, parent, index) {
-          return this.backticksFor(parent.child(index - 1), 1)
-        },
+        open: (state, mark, parent, index) => this.backticksFor(parent.child(index), -1),
+        close: (state, mark, parent, index) => this.backticksFor(parent.child(index - 1), 1),
         escape: false,
       },
     }

@@ -16,6 +16,9 @@ export default class TodoList extends Node {
         priority: 51,
         tag: '[data-type="todo_list"]',
       }],
+      toMarkdown: (state, node) => {
+        state.renderList(node, '  ', () => '[ ] ')
+      },
     }
   }
 

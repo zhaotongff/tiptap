@@ -96,6 +96,13 @@ export default class CodeBlockHighlight extends Node {
         { tag: 'pre', preserveWhitespace: 'full' },
       ],
       toDOM: () => ['pre', ['code', 0]],
+      toMarkdown: (state, node) => {
+        state.write(`\`\`\`${node.attrs.params || ''}\n`)
+        state.text(node.textContent, false)
+        state.ensureNewLine()
+        state.write('```')
+        state.closeBlock(node)
+      },
     }
   }
 

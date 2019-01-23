@@ -53,6 +53,9 @@ export default class TodoItem extends Node {
           done: dom.getAttribute('data-done') === 'true',
         }),
       }],
+      toMarkdown: (state, node) => {
+        state.renderContent(node)
+      },
     }
   }
 

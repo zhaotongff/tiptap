@@ -29,13 +29,9 @@ export default class Link extends Mark {
         rel: 'noopener noreferrer nofollow',
       }, 0],
       toMarkdown: {
-        open(state, mark, parent, index) {
-          return this.isPlainURL(mark, parent, index, 1) ? '<' : '['
-        },
-        close(state, mark, parent, index) {
-          return this.isPlainURL(mark, parent, index, -1) ? '>'
-            : `](${state.esc(mark.attrs.href)}${mark.attrs.title ? ` ${state.quote(mark.attrs.title)}` : ''})`
-        },
+        open: (state, mark, parent, index) => (this.isPlainURL(mark, parent, index, 1) ? '<' : '['),
+        close: (state, mark, parent, index) => (this.isPlainURL(mark, parent, index, -1) ? '>'
+            : `](${state.esc(mark.attrs.href)}${mark.attrs.title ? ` ${state.quote(mark.attrs.title)}` : ''})`),
       },
     }
   }

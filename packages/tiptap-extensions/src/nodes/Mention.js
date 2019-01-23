@@ -48,6 +48,9 @@ export default class Mention extends Node {
           },
         },
       ],
+      toMarkdown: (state, node) => {
+        state.write(`${this.options.matcher.char}${node.attrs.label}`)
+      },
     }
   }
 
