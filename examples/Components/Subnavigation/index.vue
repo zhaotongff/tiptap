@@ -27,6 +27,9 @@
     <router-link class="subnavigation__link" to="/suggestions">
       Suggestions
     </router-link>
+    <router-link class="subnavigation__link" to="/markdown">
+      Markdown
+    </router-link>
     <router-link class="subnavigation__link" to="/markdown-shortcuts">
       Markdown Shortcuts
     </router-link>

@@ -76,6 +76,13 @@ const routes = [
     },
   },
   {
+    path: '/markdown',
+    component: () => import('Components/Routes/Markdown'),
+    meta: {
+      githubUrl: 'https://github.com/scrumpy/tiptap/tree/master/examples/Components/Routes/Markdown',
+    },
+  },
+  {
     path: '/markdown-shortcuts',
     component: () => import('Components/Routes/MarkdownShortcuts'),
     meta: {
