@@ -54,7 +54,7 @@ export default class TodoItem extends Node {
         }),
       }],
       toMarkdown: (state, node) => {
-        state.write(`- [${node.attrs.done ? 'x' : ' '}] `)
+        state.write(`* [${node.attrs.done ? 'x' : ' '}] `)
         state.renderContent(node)
       },
     }
