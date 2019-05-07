@@ -26,8 +26,10 @@ export default class Collaboration extends Extension {
       }
     }, this.options.debounce)
 
-    this.editor.on('update', ({ state }) => {
-      this.getSendableSteps(state)
+    this.editor.on('transaction', ({ transaction, state }) => {
+      if (transaction.docChanged) {
+        this.getSendableSteps(state)
+      }
     })
   }
 
