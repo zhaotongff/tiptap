@@ -22,6 +22,10 @@ export default class Cursors extends Extension {
 
   getDecorations({ doc, selections }) {
     const decorations = selections
+      .filter(selection => {
+        const { clientID } = this.editor.extensions.options.collaboration
+        return selection.clientID !== clientID
+      })
       .map(selection => {
         const { from } = selection.selection
         const to = selection.selection.from === selection.selection.to
