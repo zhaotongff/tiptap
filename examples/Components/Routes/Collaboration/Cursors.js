@@ -28,12 +28,9 @@ export default class Cursors extends Extension {
       })
       .map(selection => {
         const { from } = selection.selection
-        const to = selection.selection.from === selection.selection.to
-          ? selection.selection.from + 1
-          : selection.selection.to
-        return Decoration.inline(from, to, {
-          class: 'cursor',
-        })
+        const span = document.createElement('span')
+        span.className = 'cursor'
+        return Decoration.widget(from, span)
       })
 
     return DecorationSet.create(doc, decorations)
