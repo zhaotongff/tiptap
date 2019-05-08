@@ -14,22 +14,25 @@ export default class Collaboration extends Extension {
   }
 
   init() {
-    this.getSendableSteps = this.debounce(state => {
+    this.getSendableSteps = this.debounce(({ transaction, state }) => {
       const sendable = sendableSteps(state)
+      const selection = {
+        from: transaction.selection.from,
+        to: transaction.selection.to,
+      }
 
-      if (sendable) {
+      if (sendable || transaction.selectionSet) {
         this.options.onSendable({
-          version: sendable.version,
-          steps: sendable.steps.map(step => step.toJSON()),
-          clientID: sendable.clientID,
+          version: getVersion(state),
+          steps: sendable ? sendable.steps.map(step => step.toJSON()) : [],
+          clientID: this.options.clientID,
+          selection,
         })
       }
     }, this.options.debounce)
 
     this.editor.on('transaction', ({ transaction, state }) => {
-      if (transaction.docChanged) {
-        this.getSendableSteps(state)
-      }
+      this.getSendableSteps({ transaction, state })
     })
   }
 

@@ -70,6 +70,7 @@ export default {
             debounce: 250,
             // onSendable is called whenever there are changed we have to send to our server
             onSendable: data => {
+              console.log('send', data)
               this.socket.emit('update', data)
             },
           }),
