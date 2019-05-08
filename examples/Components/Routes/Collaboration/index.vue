@@ -31,6 +31,8 @@ import {
   Collaboration,
 } from 'tiptap-extensions'
 
+import Cursors from './Cursors.js'
+
 export default {
   components: {
     EditorContent,
@@ -70,10 +72,11 @@ export default {
             debounce: 250,
             // onSendable is called whenever there are changed we have to send to our server
             onSendable: data => {
-              console.log('send', data)
+              // console.log('send', data)
               this.socket.emit('update', data)
             },
           }),
+          new Cursors(),
         ],
       })
     },
@@ -87,15 +90,25 @@ export default {
     // server implementation: https://glitch.com/edit/#!/tiptap-sockets
     this.socket = io('wss://tiptap-sockets2.glitch.me')
       // get the current document and its version
-      .on('init', data => this.onInit(data))
+      .on('init', data => {
+        // console.log('init', data)
+        this.onInit(data.doc)
+        this.editor.extensions.options.cursors.update(data.selections)
+      })
       // send all updates to the collaboration extension
-      .on('update', data => this.editor.extensions.options.collaboration.update(data))
+      // .on('update', data => this.editor.extensions.options.collaboration.update(data))
+      .on('update', data => {
+        // console.log('onupdate', data.selections)
+        this.editor.extensions.options.collaboration.update(data)
+        this.editor.extensions.options.cursors.update(data.selections)
+      })
       // get count of connected users
       .on('getCount', count => this.setCount(count))
   },
 
   beforeDestroy() {
     this.editor.destroy()
+    this.socket.destroy()
   },
 }
 </script>
@@ -122,6 +135,21 @@ export default {
     height: 0.4rem;
     border-radius: 50%;
     margin-right: 0.3rem;
+  }
+}
+
+.cursor {
+  position: relative;
+
+  &::before {
+    content: '';
+    display: block;
+    width: 2px;
+    height: 100%;
+    background-color: red;
+    position: absolute;
+    top: 0;
+    left: 0;
   }
 }
 </style>
