@@ -12,7 +12,7 @@ export default class Cursors extends Extension {
       update: selections => {
         const { tr } = this.editor.state
         const transaction = tr
-          .setMeta('collabSelections', selections)
+          .setMeta('selections', selections)
           .setMeta('addToHistory', false)
 
         this.editor.view.dispatch(transaction)
@@ -46,7 +46,7 @@ export default class Cursors extends Extension {
           init: (_, { doc }) => this.getDecorations({ doc, selections: [] }),
           apply: (transaction, decorationSet) => {
             const { mapping, doc } = transaction
-            const selections = transaction.getMeta('collabSelections')
+            const selections = transaction.getMeta('selections')
 
             if (selections) {
               return this.getDecorations({ doc, selections })
