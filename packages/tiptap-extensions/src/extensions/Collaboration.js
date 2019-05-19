@@ -14,10 +14,13 @@ export default class Collaboration extends Extension {
   }
 
   init() {
+    this.pending = false
+
     this.getSendableSteps = this.debounce(state => {
       const sendable = sendableSteps(state)
 
       if (sendable) {
+        this.pending = true
         this.options.onSendable({
           editor: this.editor,
           sendable: {
@@ -29,9 +32,19 @@ export default class Collaboration extends Extension {
       }
     }, this.options.debounce)
 
-    this.editor.on('update', ({ state }) => {
+    this.editor.on('update', ({ state }) => this.onUpdate(state))
+  }
+
+  onUpdate(state) {
+    if (!this.pending) {
       this.getSendableSteps(state)
-    })
+    } else {
+      console.log('still pending')
+      clearTimeout(this.retryTimeout)
+      this.retryTimeout = setTimeout(() => {
+        this.onUpdate(this.editor.state)
+      }, 200)
+    }
   }
 
   get defaultOptions() {
@@ -52,6 +65,14 @@ export default class Collaboration extends Extension {
           steps.map(item => Step.fromJSON(schema, item.step)),
           steps.map(item => item.clientID),
         ))
+
+        const mySteps = steps.some(item => item.clientID === this.options.clientID)
+
+        console.log({ mySteps })
+
+        if (mySteps) {
+          this.pending = false
+        }
       },
     }
   }
