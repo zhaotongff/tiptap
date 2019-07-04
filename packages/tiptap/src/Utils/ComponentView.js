@@ -24,13 +24,30 @@ export default class ComponentView {
     this.isMark = !this.isNode
     this.getPos = this.isMark ? this.getMarkPos : getPos
     this.captureEvents = true
-    this.dom = this.createDOM()
+    this.componentCache = this.editor.options.componentCache
+    this.destroyDelay = 50
+
+    if (this.componentCache) {
+      const cache = this.editor.cache.findByNode(this.node.toJSON())
+
+      if (cache) {
+        this.vm = cache.vm
+        this.updateComponentProps({
+          updateAttrs: attrs => this.updateAttrs(attrs),
+        })
+      } else {
+        this.vm = this.createComponent()
+      }
+    } else {
+      this.vm = this.createComponent()
+    }
+
+    this.dom = this.vm.$el
     this.contentDOM = this.vm.$refs.content
   }
 
-  createDOM() {
-    const Component = Vue.extend(this.component)
-    const props = {
+  get props() {
+    return {
       editor: this.editor,
       node: this.node,
       view: this.view,
@@ -40,13 +57,15 @@ export default class ComponentView {
       options: this.extension.options,
       updateAttrs: attrs => this.updateAttrs(attrs),
     }
+  }
 
-    this.vm = new Component({
+  createComponent() {
+    const Component = Vue.extend(this.component)
+
+    return new Component({
       parent: this.parent,
-      propsData: props,
+      propsData: this.props,
     }).$mount()
-
-    return this.vm.$el
   }
 
   update(node, decorations) {
@@ -171,7 +190,25 @@ export default class ComponentView {
   }
 
   destroy() {
-    this.vm.$destroy()
+    if (!this.componentCache) {
+      this.vm.$destroy()
+      return
+    }
+
+    const cached = this.editor.cache.add({
+      node: this.node.toJSON(),
+      vm: this.vm,
+    })
+
+    setTimeout(() => this.destroyCachedComponent(cached.id), this.destroyDelay)
+  }
+
+  destroyCachedComponent(id) {
+    const cached = this.editor.cache.findById(id)
+
+    if (cached) {
+      cached.vm.$destroy()
+    }
   }
 
 }

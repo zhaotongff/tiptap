@@ -18,6 +18,7 @@ import {
   Emitter,
   ExtensionManager,
   ComponentView,
+  Cache,
 } from './Utils'
 import { Doc, Paragraph, Text } from './Nodes'
 import css from './style.css'
@@ -46,6 +47,7 @@ export default class Editor extends Emitter {
       dropCursor: {},
       parseOptions: {},
       injectCSS: true,
+      componentCache: false,
       onInit: () => {},
       onTransaction: () => {},
       onUpdate: () => {},
@@ -73,6 +75,7 @@ export default class Editor extends Emitter {
       ...this.defaultOptions,
       ...options,
     })
+    this.cache = this.createCache()
     this.element = document.createElement('div')
     this.extensions = this.createExtensions()
     this.nodes = this.createNodes()
@@ -132,6 +135,10 @@ export default class Editor extends Emitter {
 
   get state() {
     return this.view ? this.view.state : null
+  }
+
+  createCache() {
+    return new Cache()
   }
 
   createExtensions() {

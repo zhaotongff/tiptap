@@ -1,3 +1,4 @@
+export { default as Cache } from './Cache'
 export { default as camelCase } from './camelCase'
 export { default as ComponentView } from './ComponentView'
 export { default as Emitter } from './Emitter'
